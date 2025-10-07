@@ -1,0 +1,7 @@
+{
+  // Use this venv for running/debugging Python
+  "python.defaultInterpreterPath": "${workspaceFolder}/.venv",
+
+  // Auto-activate the env in VS Code's integrated terminal
+  "python.terminal.activateEnvironment": true
+}
