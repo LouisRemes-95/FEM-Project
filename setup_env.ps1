@@ -29,13 +29,11 @@ foreach ($path in $fileList) {
             # It's a folder → make all contained files read-only
             Get-ChildItem $path -Recurse -File | ForEach-Object {
                 $_.Attributes = ($_.Attributes -bor [System.IO.FileAttributes]::ReadOnly)
-                Write-Host "Made read-only: $($_.FullName)"
             }
         } else {
             # It's a single file
             $item = Get-Item $path
             $item.Attributes = ($item.Attributes -bor [System.IO.FileAttributes]::ReadOnly)
-            Write-Host "Made read-only: $($item.FullName)"
         }
     } else {
         Write-Warning "Path not found: $path"
