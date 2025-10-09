@@ -40,7 +40,6 @@ foreach ($path in $fileList) {
     }
 }
 
-
 # Remove setup-related files
 $removeFiles = @("requirements.txt", "setup_env.ps1", "setup_env.sh", ".gitignore")
 foreach ($file in $removeFiles) {
