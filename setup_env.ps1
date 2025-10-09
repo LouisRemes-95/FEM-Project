@@ -26,16 +26,22 @@ $fileList = @(
 foreach ($path in $fileList) {
     if (Test-Path $path) {
         if ((Get-Item $path).PSIsContainer) {
+            # It's a folder → make all contained files read-only
             Get-ChildItem $path -Recurse -File | ForEach-Object {
-                $_.Attributes = ($_.Attributes -band -bnot [System.IO.FileAttributes]::ReadOnly)
+                $_.Attributes = ($_.Attributes -bor [System.IO.FileAttributes]::ReadOnly)
+                Write-Host "Made read-only: $($_.FullName)"
             }
         } else {
+            # It's a single file
             $item = Get-Item $path
-            $item.Attributes = ($item.Attributes -band -bnot [System.IO.FileAttributes]::ReadOnly)
+            $item.Attributes = ($item.Attributes -bor [System.IO.FileAttributes]::ReadOnly)
+            Write-Host "Made read-only: $($item.FullName)"
         }
     } else {
         Write-Warning "Path not found: $path"
-    }}
+    }
+}
+
 
 # Remove setup-related files
 $removeFiles = @("requirements.txt", "setup_env.ps1", "setup_env.sh", ".gitignore")
