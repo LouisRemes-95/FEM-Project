@@ -26,26 +26,28 @@ $paths = @(
     ".vscode"
 )
 
-# Apply Read + Execute permissions for Everyone
-foreach ($path in $paths) {
+$fileList = @(
+    "provided_code",
+    "provided_code\plotting.py",
+    "provided_code\solver.py",
+    "code_to_be_implemented\__init__.py",
+    "main.py",
+    ".venv",
+    ".vscode"
+)
+
+foreach ($path in $fileList) {
     if (Test-Path $path) {
-        $acl = Get-Acl $path
-        $acl.SetAccessRuleProtection($true, $false)  # Disable inheritance
-        $rule = New-Object System.Security.AccessControl.FileSystemAccessRule("Everyone", "ReadAndExecute", "Allow")
-        $acl.SetAccessRule($rule)
-        Set-Acl $path $acl
-        Write-Host "Set Read+Execute only for $path"
+        if ((Get-Item $path).PSIsContainer) {
+            Get-ChildItem $path -Recurse -File | ForEach-Object {
+                $_.Attributes = ($_.Attributes -band -bnot [System.IO.FileAttributes]::ReadOnly)
+            }
+        } else {
+            $item = Get-Item $path
+            $item.Attributes = ($item.Attributes -band -bnot [System.IO.FileAttributes]::ReadOnly)
+        }
     } else {
         Write-Warning "Path not found: $path"
-    }
-}
-
-# Remove setup-related files
-$removeFiles = @("requirements.txt", "setup_env.ps1", "setup_env.sh", ".gitignore")
-foreach ($file in $removeFiles) {
-    if (Test-Path $file) {
-        Remove-Item $file -Force
-        Write-Host "Removed $file"
     }
 }
 
