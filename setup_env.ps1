@@ -35,7 +35,7 @@ foreach ($path in $fileList) {
         }
     } else {
         Write-Warning "Path not found: $path"
-    }
+    }}
 
 # Remove setup-related files
 $removeFiles = @("requirements.txt", "setup_env.ps1", "setup_env.sh", ".gitignore")
