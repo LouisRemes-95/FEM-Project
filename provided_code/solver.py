@@ -13,7 +13,7 @@ def linel_fem_solver(input_path: str):
     validate_input_module(inp)
 
     fname = os.path.basename(input_path)
-    print(f"\n✅ Input '{fname}' is properly formatted.\n")
+    print(f"\n🟢 Input '{fname}' is properly formatted.\n")
 
     # Show some info on the data
     nnode = inp.node.shape[0]
@@ -44,7 +44,7 @@ def linel_fem_solver(input_path: str):
     try:
         u = np.linalg.solve(Kcl, Fcl)
     except np.linalg.LinAlgError as e:
-        raise RuntimeError(f"Failed to solve linear system: {e}")
+        raise RuntimeError(f"❌ Failed to solve linear system: {e}")
     print(f"\n✅ Input '{fname}' is solved.\n")
 
     # ------------------------- SAVES OUTPUT DATA -------------------------
