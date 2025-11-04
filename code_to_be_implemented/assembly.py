@@ -36,7 +36,7 @@ def assembly(node: np.ndarray,
     # TODO: Total number of degrees of freedom of the structure
     ndof  = 
 
-    # TODO: Initialize Ksys full of zeros 
+    # TODO: Initialize Ksys full of zeros
     # For efficient storage, one should use a sparse matrix from scipy.sparse instead of NumPy (not necessary in this project)
     Ksys = 
 
