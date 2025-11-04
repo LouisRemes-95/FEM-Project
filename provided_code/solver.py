@@ -2,6 +2,7 @@ import importlib.util
 import os
 from types import ModuleType
 import numpy as np
+from .dofpos import compute_dofpos
 from code_to_be_implemented.assembly import assembly
 from code_to_be_implemented.boundcond import boundcond
 from code_to_be_implemented.elements import ElementType, tetra4_strain_stress
@@ -56,17 +57,6 @@ def linel_fem_solver(input_path: str):
     print("Saved:", paths["txt"])
 
 # ======================== Main FEM logic functions =======================
-def compute_dofpos(nnode: int) -> np.ndarray:
-    """
-    Return the (nnode, 3) DOF-positioning array for 3D problems.
-    Row i gives the global DOF indices [ux, uy, uz] for node i (0-based).
-    """
-    ndof = 3 * nnode
-    return np.column_stack((
-        np.arange(0, ndof, 3),
-        np.arange(1, ndof, 3),
-        np.arange(2, ndof, 3),
-    ))
 
 def getpforce(nodf: np.ndarray, nnode: int) -> np.ndarray:
 

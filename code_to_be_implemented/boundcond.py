@@ -1,5 +1,6 @@
 import numpy as np
 from typing import Tuple
+from provided_code.dofpos import compute_dofpos
 
 def boundcond(pdof: np.ndarray,
               Ksys: np.ndarray,
@@ -28,17 +29,17 @@ def boundcond(pdof: np.ndarray,
     Kcl, Fcl : tuple of np.ndarray
         - Kcl : Stiffness matrix with BCs applied (same shape as Ksys)
         - Fcl : Force vector with BCs applied (same shape as Fext)
+
+    A tuple is the standard way to return multiple values in Python.
+    Python functions always return a single object, and when you write
+    `return Kcl, Fcl`, those values are automatically bundled into a tuple.
     """
 
     # TODO: Total number of degrees of freedom of the system
     ndof = 
 
     # Build dofpos: shape (nnode, 3)
-    dofpos = np.vstack([
-        np.arange(0, ndof, 3),
-        np.arange(1, ndof, 3),
-        np.arange(2, ndof, 3),
-    ]).T
+    dofpos = compute_dofpos(nnode)
 
     # TODO: Number of nodal degrees of freedom
     ndof_node = 

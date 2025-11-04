@@ -1,5 +1,6 @@
 import numpy as np
 from .elements import ElementType, tetra4_K
+from provided_code.dofpos import compute_dofpos
 
 def assembly(node: np.ndarray,
              elem: np.ndarray,
@@ -35,7 +36,8 @@ def assembly(node: np.ndarray,
     # TODO: Total number of degrees of freedom of the structure
     ndof  = 
 
-    # TODO: Initialize Ksys full of zeros
+    # TODO: Initialize Ksys full of zeros 
+    # For efficient storage, one should use a sparse matrix from scipy.sparse instead of NumPy (not necessary in this project)
     Ksys = 
 
     for e in range(nelem):
@@ -49,6 +51,8 @@ def assembly(node: np.ndarray,
 
         match eltpe:
             case ElementType.TETRA4:
+                # You will need dofpos = compute_dofpos(nnode)
+
                 # TODO: Determine the position of the dof in the unknowns
 
                 # TODO: Add element contribution to the structural stiffness matrix

@@ -125,6 +125,10 @@ def tetra4_strain_stress(nodee: np.ndarray,
         Engineering strain vector.
     stress : np.ndarray, shape (6,)
         Cauchy stress vector.
+
+    A tuple is the standard way to return multiple values in Python.
+    Python functions always return a single object, and when you write
+    `return Kcl, Fcl`, those values are automatically bundled into a tuple.
     """
     # TODO: Post-processing step, compute the strain and stress matrix
     return strain, stress
