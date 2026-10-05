@@ -5,130 +5,107 @@ class ElementType(Enum):
     TETRA4 = "tetra4"
 
 # ============================================================
-# Core helpers
-# ============================================================
-# I created these for ease of implementation, but you are not requiered to use helper functions
-
-
-# def tetra4_coord_transform(nodee: np.ndarray) -> np.ndarray:
-    """
-    Build the 4×4 coordinate transformation matrix for a 4-node tetrahedron.
-
-    Parameters
-    ----------
-    nodee : np.ndarray, shape (4, 3)
-        Element nodal coordinates. Each row is [x, y, z].
-
-    Returns
-    -------
-    Ct : np.ndarray, shape (4, 4)
-        Coordinate transform matrix:
-            [ 1   1   1   1
-              x1  x2  x3  x4
-              y1  y2  y3  y4
-              z1  z2  z3  z4 ]
-    """
-
-
-# def tetra4_volume(nodee: np.ndarray) -> float:
-    """
-    Compute the volume of a 4-node tetrahedron.
-
-    Parameters
-    ----------
-    nodee : np.ndarray, shape (4, 3)
-        Element nodal coordinates.
-
-    Returns
-    -------
-    Ve : float
-        Element volume.
-    """
-
-
-# def tetra4_B(nodee: np.ndarray) -> np.ndarray:
-    """
-    Build the 6×12 strain–displacement matrix for a 4-node tetrahedron.
-
-    Parameters
-    ----------
-    nodee : np.ndarray, shape (4, 3)
-        Element nodal coordinates.
-
-    Returns
-    -------
-    B : np.ndarray, shape (6, 12)
-        Strain–displacement matrix such that strain = B @ u_e.
-    """
-
-
-# def hooke_iso_3d(E: float, v: float) -> np.ndarray:
-    """
-    Build the 6×6 Hooke matrix for 3D isotropic elasticity.
-
-    Parameters
-    ----------
-    E : float
-        Young's modulus.
-    v : float
-        Poisson's ratio.
-
-    Returns
-    -------
-    H : np.ndarray, shape (6, 6)
-        Constitutive matrix.
-    """
-
-
-# ============================================================
-# Public element routines
+# Object-oriented student API
 # ============================================================
 
-def tetra4_K(nodee: np.ndarray, matere: np.ndarray) -> np.ndarray:
-    """
-    Compute the stiffness matrix for a 4-node tetrahedron.
+class Tetra4Element:
+    """A four-node, three-dimensional linear-elastic tetrahedral element.
 
     Parameters
     ----------
     nodee : np.ndarray, shape (4, 3)
-        Element nodal coordinates.
+        Element nodal coordinates. Each row is ``[x, y, z]``.
     matere : np.ndarray
-        Material properties [E, v].
+        Material properties ``[E, nu]``.
 
-    Returns
-    -------
-    Ke : np.ndarray, shape (12, 12)
-        Element stiffness matrix.
+    Notes
+    -----
+    This class groups the same data and FEM calculations as the procedural
+    starter code; the formulation students implement is unchanged.
     """
-    # TODO: Compute the stiffness matrix of the finite element
-    return Ke
 
+    def __init__(self, nodee: np.ndarray, matere: np.ndarray) -> None:
+        self.nodee = np.asarray(nodee, dtype=float)
+        self.matere = np.asarray(matere, dtype=float)
 
-def tetra4_strain_stress(nodee: np.ndarray,
-                         matere: np.ndarray,
-                         ue: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
-    """
-    Compute constant strain and stress for a 4-node tetrahedron.
+    # Core helpers
+    # I created these for ease of implementation, but you are not required to
+    # use helper methods if you prefer a different organisation.
+    def coordinate_transform(self) -> np.ndarray:
+        """Build the 4-by-4 coordinate transformation matrix.
 
-    Parameters
-    ----------
-    nodee : np.ndarray, shape (4, 3)
-        Element nodal coordinates.
-    matere : np.ndarray
-        Material properties [E, v].
-    ue : np.ndarray, shape (12,)
-        Element displacement vector.
+        Returns
+        -------
+        Ct : np.ndarray, shape (4, 4)
+            ``[[1, 1, 1, 1], [x1, x2, x3, x4],
+              [y1, y2, y3, y4], [z1, z2, z3, z4]]``.
+        """
+        # TODO: Build Ct from self.nodee.
+        raise NotImplementedError("TODO: implement coordinate_transform")
 
-    Returns
-    -------
-    strain : np.ndarray, shape (6,)
-        Engineering strain vector.
-    stress : np.ndarray, shape (6,)
-        Cauchy stress vector.
+    def volume(self) -> float:
+        """Compute the volume of a 4-node tetrahedron.
 
-    A tuple is the standard way to return multiple values in Python.
-    Python functions always return a single object, and when you write
-    `return Kcl, Fcl`, those values are automatically bundled into a tuple.
-    """
-    # TODO: Post-processing step, compute the strain and stress matrix
-    return strain, stress
+        Returns
+        -------
+        Ve : float
+            Element volume.
+        """
+        # TODO: Compute Ve from self.nodee.
+        raise NotImplementedError("TODO: implement volume")
+
+    def b_matrix(self) -> np.ndarray:
+        """Build the 6-by-12 strain-displacement matrix.
+
+        Returns
+        -------
+        B : np.ndarray, shape (6, 12)
+            Strain-displacement matrix such that ``strain = B @ u_e``.
+        """
+        # TODO: Compute B from self.nodee.
+        raise NotImplementedError("TODO: implement b_matrix")
+
+    def hooke_matrix(self) -> np.ndarray:
+        """Build the 6-by-6 Hooke matrix for 3D isotropic elasticity.
+
+        Returns
+        -------
+        H : np.ndarray, shape (6, 6)
+            Constitutive matrix.
+        """
+        # TODO: Compute H from self.matere = [E, nu].
+        raise NotImplementedError("TODO: implement hooke_matrix")
+
+    def stiffness(self) -> np.ndarray:
+        """Compute the stiffness matrix for this 4-node tetrahedron.
+
+        Returns
+        -------
+        Ke : np.ndarray, shape (12, 12)
+            Element stiffness matrix.
+        """
+        # TODO: Compute the stiffness matrix of the finite element.
+        raise NotImplementedError("TODO: implement stiffness")
+
+    def strain_stress(self, ue: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+        """Compute constant strain and stress for this 4-node tetrahedron.
+
+        Parameters
+        ----------
+        ue : np.ndarray, shape (12,)
+            Element displacement vector, ordered as
+            ``[u1x, u1y, u1z, ..., u4x, u4y, u4z]``.
+
+        Returns
+        -------
+        strain : np.ndarray, shape (6,)
+            Engineering strain vector.
+        stress : np.ndarray, shape (6,)
+            Cauchy stress vector.
+
+        A tuple is the standard way to return multiple values in Python.
+        Python functions always return a single object; writing
+        ``return strain, stress`` bundles both values into a tuple.
+        """
+        # TODO: Post-process ue to compute and return (strain, stress).
+        raise NotImplementedError("TODO: implement strain_stress")

@@ -3,9 +3,9 @@ import os
 from types import ModuleType
 import numpy as np
 from .dofpos import compute_dofpos
-from code_to_be_implemented.assembly import assembly
-from code_to_be_implemented.boundcond import boundcond
-from code_to_be_implemented.elements import ElementType, tetra4_strain_stress
+from code_to_be_implemented.assembly import Assembler
+from code_to_be_implemented.boundcond import BoundaryConditions
+from code_to_be_implemented.elements import ElementType, Tetra4Element
 from typing import Dict, Any
 
 def linel_fem_solver(input_path: str):
@@ -36,10 +36,10 @@ def linel_fem_solver(input_path: str):
 
     # -------------------------- STIFFNESS MATRIX -------------------------
     # assembly of the structural stiffness matrix
-    Ksys = assembly(inp.node, inp.elem, inp.eltp, inp.mater)
+    Ksys = Assembler(inp.node, inp.elem, inp.eltp, inp.mater).assemble()
 
     # apply the boundary conditions
-    Kcl, Fcl = boundcond(inp.pdof, Ksys, Fext, inp.bc_method, nnode)
+    Kcl, Fcl = BoundaryConditions(inp.pdof, inp.bc_method, nnode).apply(Ksys, Fext)
 
     # -------------------------- SOLVE THE SYSTEM -------------------------
     try:
@@ -195,7 +195,8 @@ def getstrainstress(node: np.ndarray,
                 ue = u_flat[ue_idx]
 
                 # per-element strain & stress
-                e6, s6 = tetra4_strain_stress(nodee, mater[mat_id, :], ue)
+                element = Tetra4Element(nodee, mater[mat_id, :])
+                e6, s6 = element.strain_stress(ue)
                 strain[ie, :] = e6
                 stress[ie, :] = s6
             case _:

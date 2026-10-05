@@ -2,57 +2,67 @@ import numpy as np
 from typing import Tuple
 from provided_code.dofpos import compute_dofpos
 
-def boundcond(pdof: np.ndarray,
-              Ksys: np.ndarray,
-              Fext: np.ndarray,
-              method: float,
-              nnode: int) -> Tuple[np.ndarray, np.ndarray]:
-    """
-    Apply Dirichlet boundary conditions to the structural system.
+
+class BoundaryConditions:
+    """Apply prescribed displacements to a linear-elastic global system.
 
     Parameters
     ----------
-    pdof : (npdof, 3) array
-        Prescribed DOFs: [node#, dir, value] with 1-based node# and dir ∈ {1,2,3}.
-    Ksys : (ndof, ndof) array
-        Global stiffness matrix before BCs (dense).
-    Fext : (ndof,) array
-        External force vector before BCs.
+    pdof : np.ndarray, shape (npdof, 3)
+        Prescribed DOFs: ``[node#, direction, value]``. Node and direction
+        IDs are 1-based; direction is 1, 2, or 3.
     method : float
-        If method < 0  → direct elimination method.
-        If method >= 0 → penalty method with Z = method.
+        If ``method < 0``, use direct elimination. Otherwise, use the penalty
+        method with ``Z = method``.
     nnode : int
         Total number of nodes in the structure.
-
-    Returns
-    -------
-    Kcl, Fcl : tuple of np.ndarray
-        - Kcl : Stiffness matrix with BCs applied (same shape as Ksys)
-        - Fcl : Force vector with BCs applied (same shape as Fext)
-
-    A tuple is the standard way to return multiple values in Python.
-    Python functions always return a single object, and when you write
-    `return Kcl, Fcl`, those values are automatically bundled into a tuple.
     """
 
-    # TODO: Total number of degrees of freedom of the system
-    ndof = 
+    def __init__(self, pdof: np.ndarray, method: float, nnode: int) -> None:
+        self.pdof = pdof
+        self.method = method
+        self.nnode = nnode
 
-    # Build dofpos: shape (nnode, 3)
-    dofpos = compute_dofpos(nnode)
+    def apply(self, Ksys: np.ndarray, Fext: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+        """Apply Dirichlet boundary conditions to the structural system.
 
-    # TODO: Number of nodal degrees of freedom
-    ndof_node = 
+        Parameters
+        ----------
+        Ksys : np.ndarray, shape (ndof, ndof)
+            Global stiffness matrix before boundary conditions.
+        Fext : np.ndarray, shape (ndof,)
+            External force vector before boundary conditions.
 
-    # TODO: Initialize Kcl and Fcl 
-    # !!! Numpy arrays are mutable, so can be modified outside of the function scope. See .copy()
-    Fcl = 
-    Kcl = 
+        Returns
+        -------
+        Kcl, Fcl : tuple of np.ndarray
+            ``Kcl`` is the stiffness matrix with boundary conditions applied;
+            ``Fcl`` is the corresponding force vector.
 
-    if method < 0:
-        # TODO: Direct method
-    else:
-        # TODO: Penalty method
-        Z = float(method)
+        A tuple is the standard way to return multiple values in Python.
+        Python functions always return a single object; writing
+        ``return Kcl, Fcl`` bundles both values into a tuple.
+        """
+        # TODO: Total number of degrees of freedom of the system.
+        ndof = ...
 
-    return Kcl, Fcl
+        dofpos = compute_dofpos(self.nnode)
+
+        # TODO: Number of prescribed nodal degrees of freedom.
+        ndof_node = ...
+
+        # TODO: Initialize Kcl and Fcl.
+        # NumPy arrays are mutable, so use .copy() before modifying incoming
+        # arrays; otherwise changes can escape this method's scope.
+        Fcl = ...
+        Kcl = ...
+
+        if self.method < 0:
+            # TODO: Direct elimination method.
+            pass
+        else:
+            # TODO: Penalty method.
+            Z = float(self.method)
+            pass
+
+        return Kcl, Fcl
