@@ -1,5 +1,12 @@
-# Ignored folders
-
+# Virtual environment
 .venv/
+
+# Generated outputs
 outputs/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Local helper
 start_cli_ai_agent.sh

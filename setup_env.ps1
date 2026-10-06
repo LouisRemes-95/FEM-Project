@@ -1,53 +1,60 @@
 # Stop on first error
 $ErrorActionPreference = "Stop"
 
-# Create virtual environment
-python -m venv .venv
+# Always run from the project directory
+Set-Location $PSScriptRoot
 
-# Activate it
-& .\.venv\Scripts\Activate.ps1
+# Check that uv is installed
+if (-not (Get-Command uv -ErrorAction SilentlyContinue)) {
+    Write-Host "ERROR: uv is not installed."
+    Write-Host "Install it from:"
+    Write-Host "https://docs.astral.sh/uv/"
+    exit 1
+}
 
-# Upgrade pip
-python -m pip install --upgrade pip
+Write-Host "Setting up project environment..."
 
-# Install dependencies
-pip install -r requirements.txt
+# Create/synchronize the virtual environment
+# using the exact versions from uv.lock
+uv sync --locked
 
-# ===== Add permission settings and cleanup below =====
+# ===== Make provided files read-only =====
 
 $fileList = @(
     "provided_code",
     "code_to_be_implemented\__init__.py",
     "main.py",
-    ".venv",
     ".vscode"
 )
 
 foreach ($path in $fileList) {
     if (Test-Path $path) {
         if ((Get-Item $path).PSIsContainer) {
-            # It's a folder → make all contained files read-only
+            # Folder -> make all contained files read-only
             Get-ChildItem $path -Recurse -File | ForEach-Object {
-                $_.Attributes = ($_.Attributes -bor [System.IO.FileAttributes]::ReadOnly)
+                $_.Attributes = (
+                    $_.Attributes -bor [System.IO.FileAttributes]::ReadOnly
+                )
             }
-        } else {
-            # It's a single file
-            $item = Get-Item $path
-            $item.Attributes = ($item.Attributes -bor [System.IO.FileAttributes]::ReadOnly)
         }
-    } else {
+        else {
+            # Single file -> make read-only
+            $item = Get-Item $path
+            $item.Attributes = (
+                $item.Attributes -bor [System.IO.FileAttributes]::ReadOnly
+            )
+        }
+    }
+    else {
         Write-Warning "Path not found: $path"
     }
 }
 
-# Remove setup-related files
-$removeFiles = @("requirements.txt", "setup_env.ps1", "setup_env.sh", ".gitignore")
-foreach ($file in $removeFiles) {
-    if (Test-Path $file) {
-        Remove-Item $file -Force
-        Write-Host "Removed $file"
-    }
-}
-
-Write-Host "`nEnvironment ready. Activate later with:"
-Write-Host "`t.venv\Scripts\Activate.ps1"
+Write-Host ""
+Write-Host "Environment ready."
+Write-Host ""
+Write-Host "Run the project with:"
+Write-Host "    uv run python main.py"
+Write-Host ""
+Write-Host "Example plotting command:"
+Write-Host "    uv run python -m provided_code.plotting input_example --what mesh"
