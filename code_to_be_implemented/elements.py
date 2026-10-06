@@ -17,11 +17,6 @@ class Tetra4Element:
         Element nodal coordinates. Each row is ``[x, y, z]``.
     matere : np.ndarray
         Material properties ``[E, nu]``.
-
-    Notes
-    -----
-    This class groups the same data and FEM calculations as the procedural
-    starter code; the formulation students implement is unchanged.
     """
 
     def __init__(self, nodee: np.ndarray, matere: np.ndarray) -> None:
